@@ -1,0 +1,123 @@
+-- Script to create a movable GUI with minimize button, AutoMuscle, AutoAttack, AutoBuyCapacity, and AutoBuyRebirth
+
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+local muscleButton = Instance.new("TextButton")
+local attackButton = Instance.new("TextButton")
+local buyCapacityButton = Instance.new("TextButton")
+local buyRebirthButton = Instance.new("TextButton")
+local minimizeButton = Instance.new("TextButton")
+
+-- Set up GUI
+screenGui.Parent = player:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false
+
+frame.Parent = screenGui
+frame.Position = UDim2.new(0.5, -100, 0.5, -200)
+frame.Size = UDim2.new(0, 200, 0, 220)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BorderSizePixel = 0
+
+-- AutoMuscle Button
+muscleButton.Parent = frame
+muscleButton.Size = UDim2.new(0, 180, 0, 40)
+muscleButton.Position = UDim2.new(0, 10, 0, 30)
+muscleButton.Text = "Auto Muscle"
+muscleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+muscleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+
+-- AutoAttack Button
+attackButton.Parent = frame
+attackButton.Size = UDim2.new(0, 180, 0, 40)
+attackButton.Position = UDim2.new(0, 10, 0, 80)
+attackButton.Text = "Auto Attack"
+attackButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+attackButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+
+-- AutoBuyCapacity Button
+buyCapacityButton.Parent = frame
+buyCapacityButton.Size = UDim2.new(0, 180, 0, 40)
+buyCapacityButton.Position = UDim2.new(0, 10, 0, 130)
+buyCapacityButton.Text = "Auto Buy Capacity"
+buyCapacityButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+buyCapacityButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+
+-- AutoBuyRebirth Button
+buyRebirthButton.Parent = frame
+buyRebirthButton.Size = UDim2.new(0, 180, 0, 40)
+buyRebirthButton.Position = UDim2.new(0, 10, 0, 180)
+buyRebirthButton.Text = "Auto Buy Rebirth"
+buyRebirthButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+buyRebirthButton.BackgroundColor3 = Color3.fromRGB(150, 0, 255)
+
+-- Minimize Button
+minimizeButton.Parent = frame
+minimizeButton.Size = UDim2.new(0, 20, 0, 20)
+minimizeButton.Position = UDim2.new(1, -25, 0, 5)
+minimizeButton.Text = "-"
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+
+-- Variables to control Auto actions
+local AutoMuscle = false
+local AutoAttack = false
+local AutoBuyCapacity = false
+local AutoBuyRebirth = false
+local isMinimized = false
+local Remote = game:GetService("ReplicatedStorage").RemoteEvent
+
+-- Toggle AutoMuscle
+muscleButton.MouseButton1Click:Connect(function()
+    AutoMuscle = not AutoMuscle
+    muscleButton.BackgroundColor3 = AutoMuscle and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+end)
+
+-- Toggle AutoAttack
+attackButton.MouseButton1Click:Connect(function()
+    AutoAttack = not AutoAttack
+    attackButton.BackgroundColor3 = AutoAttack and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+end)
+
+-- Toggle AutoBuyCapacity
+buyCapacityButton.MouseButton1Click:Connect(function()
+    AutoBuyCapacity = not AutoBuyCapacity
+    buyCapacityButton.BackgroundColor3 = AutoBuyCapacity and Color3.fromRGB(0, 150, 255) or Color3.fromRGB(150, 150, 150)
+end)
+
+-- Toggle AutoBuyRebirth
+buyRebirthButton.MouseButton1Click:Connect(function()
+    AutoBuyRebirth = not AutoBuyRebirth
+    buyRebirthButton.BackgroundColor3 = AutoBuyRebirth and Color3.fromRGB(150, 0, 255) or Color3.fromRGB(150, 150, 150)
+end)
+
+-- Minimize functionality
+minimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    muscleButton.Visible = not isMinimized
+    attackButton.Visible = not isMinimized
+    buyCapacityButton.Visible = not isMinimized
+    buyRebirthButton.Visible = not isMinimized
+    frame.Size = isMinimized and UDim2.new(0, 200, 0, 30) or UDim2.new(0, 200, 0, 220)
+    minimizeButton.Text = isMinimized and "+" or "-"
+end)
+
+-- Main loop for Auto actions
+while true do
+    wait(0.1) -- Run actions every 0.1 seconds
+    if AutoMuscle then
+        Remote:FireServer("GainMuscle")
+    end
+
+    if AutoAttack then
+        Remote:FireServer("AttackClick")
+    end
+
+    if AutoBuyCapacity then
+        Remote:FireServer("BuyCapacity")
+    end
+
+    if AutoBuyRebirth then
+        Remote:FireServer("BuyRebirth")
+    end
+end
